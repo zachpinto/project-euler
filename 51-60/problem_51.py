@@ -8,7 +8,7 @@
 
 # Find the smallest prime which, by replacing part of the number (not necessarily adjacent digits) with the same digit, is part of an eight prime value family.
 
-from itertools import combinations, product
+from itertools import combinations
 
 def sieve_of_eratosthenes(limit):
     sieve = [True] * limit
@@ -24,11 +24,9 @@ def prime_digit_replacements(primes, family_size):
     for prime in primes:
         s = str(prime)
         length = len(s)
-        # Try replacing every possible non-empty subset of indices with each digit from 0 to 9
         for r in range(1, length):  # r is the number of digits replaced
             for indices in combinations(range(length), r):
                 prime_family = set()
-                # Replace selected digits with each digit from 0 to 9
                 for replacement_digit in map(str, range(10)):
                     if indices[0] == 0 and replacement_digit == '0':
                         continue  # Skip leading zero cases
@@ -36,17 +34,16 @@ def prime_digit_replacements(primes, family_size):
                     for index in indices:
                         new_number[index] = replacement_digit
                     new_prime = int(''.join(new_number))
-                    if new_prime in prime_set:
+                    if new_prime in prime_set and len(str(new_prime)) == length:
                         prime_family.add(new_prime)
                 if len(prime_family) == family_size:
-                    return prime
+                    return min(prime_family)
     return None
 
 def main():
-    primes = sieve_of_eratosthenes(100000)
+    limit = 1000000  # Increased limit to ensure we find the solution
+    primes = sieve_of_eratosthenes(limit)
     result = prime_digit_replacements(primes, 8)
     print("The smallest prime in the family is:", result)
 
 main()
-
-
