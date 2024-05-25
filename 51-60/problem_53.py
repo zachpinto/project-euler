@@ -18,37 +18,44 @@
 
 # How many, not necessarily distinct, values of  nCr, for 1 ≤ n ≤ 100, are greater than one-million?
 
-# user input
 def get_input():
     return int(input("Enter the input: "))
 
-# implement factorial without using math.factorial
+# Implement factorial with memoization
+factorial_memo = {}
+
 def factorial(n):
     if n == 0:
         return 1
+    if n in factorial_memo:
+        return factorial_memo[n]
+    result = n
     for i in range(n - 1, 0, -1):
-        n *= i
-    return n
+        result *= i
+    factorial_memo[n] = result
+    return result
 
+# Implement nCr with memoization
+nCr_memo = {}
 
-# implement nCr
 def nCr(n, r):
-    return factorial(n) // (factorial(r) * factorial(n - r))
+    if (n, r) in nCr_memo:
+        return nCr_memo[(n, r)]
+    result = factorial(n) // (factorial(r) * factorial(n - r))
+    nCr_memo[(n, r)] = result
+    return result
 
-
-def count_over_input(input):
+def count_over_input(input_value):
     count = 0
     for n in range(1, 101):
         for r in range(1, n):
-            if nCr(n, r) > input:
+            if nCr(n, r) > input_value:
                 count += 1
     return count
 
-
 def main():
-    input = get_input()
-    result = count_over_input(input)
+    input_value = get_input()
+    result = count_over_input(input_value)
     print(result)
-
 
 main()
